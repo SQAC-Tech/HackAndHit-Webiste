@@ -14,7 +14,7 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        
+
         if (!username || !password) {
             toast.error("Please enter username and password");
             return;
@@ -39,7 +39,7 @@ const Login = () => {
     return (
         <div className="min-h-screen w-full bg-gradient-to-br from-[#0B0633] via-[#140A52] to-[#0B0633] flex flex-col items-center justify-center">
             <div className="bg-white/10 backdrop-blur-xl rounded-2xl p-10 w-[90%] max-w-md border border-orange-500/30 shadow-[0_0_40px_rgba(249,115,22,0.25)]">
-                
+
                 <h1 className="text-3xl font-bold text-white text-center mb-2">
                     🔐 Admin Login
                 </h1>
@@ -78,14 +78,6 @@ const Login = () => {
                         {loading ? "Logging in..." : "Login"}
                     </button>
                 </form>
-
-                {/* Demo Credentials */}
-                <div className="mt-6 p-4 bg-orange-500/20 border border-orange-500/40 rounded-xl">
-                    <p className="text-orange-400 text-sm font-bold mb-1">Demo Credentials:</p>
-                    <p className="text-white text-sm">Username: <span className="text-orange-300">admin</span></p>
-                    <p className="text-white text-sm">Password: <span className="text-orange-300">admin123</span></p>
-                </div>
-
                 <p className="text-gray-400 text-center mt-6 text-sm">
                     <a href="/" className="text-orange-400 hover:underline">← Back to Home</a>
                 </p>

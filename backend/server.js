@@ -23,7 +23,12 @@ redis.on('error', (err) => console.error('Redis Error:', err));
 redis.on('connect', () => console.log('Redis connected'));
 
 // Middleware
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+}));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -80,10 +85,12 @@ app.post('/api/admin/login', async (req, res) => {
 
         res.cookie('adminToken', token, {
             httpOnly: true,
-            secure: false, // set true in production with HTTPS
-            sameSite: 'lax',
-            maxAge: 24 * 60 * 60 * 1000 // 24 hours
+            secure: false,     // localhost
+            sameSite: 'lax',   // ✅ FIX
+            maxAge: 24 * 60 * 60 * 1000
         });
+
+
 
         res.json({ success: true, message: 'Login successful', username: admin.username });
     } catch (err) {
@@ -177,30 +184,83 @@ app.get('/api/admin/analytics/team-sizes', verifyAdmin, async (req, res) => {
 });
 
 // POST - Create team
-app.post('/api/teams', rateLimit, async (req, res) => {
+// POST - Create team (FIXED FOR NEW SCHEMA)
+app.post("/api/teams", rateLimit, async (req, res) => {
     try {
-        const { teamname, teamSize, leadername, leaderemail, leaderphone,
-            member1name, member1email, member1phone,
-            member2name, member2email, member2phone,
-            member3name, member3email, member3phone } = req.body;
+        const {
+            teamname,
+            teamSize,
+            leader,
+            member1,
+            member2,
+            member3,
+            transactionId
+        } = req.body;
+
+        if (!teamname || !teamSize || !leader || !member1 || !transactionId) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
 
         const existing = await Team.findOne({ teamname });
-        if (existing) return res.status(400).json({ error: 'Team name exists' });
+        if (existing) {
+            return res.status(400).json({ error: "Team name already exists" });
+        }
 
-        const team = new Team({
-            teamname, teamSize: teamSize || 1,
-            leader: { name: leadername, email: leaderemail, phone: leaderphone },
-            ...(teamSize >= 2 && { member1: { name: member1name, email: member1email, phone: member1phone } }),
-            ...(teamSize >= 3 && { member2: { name: member2name, email: member2email, phone: member2phone } }),
-            ...(teamSize >= 4 && { member3: { name: member3name, email: member3email, phone: member3phone } })
+        // 🔥 NORMALIZER (THIS FIXES EVERYTHING)
+        const normalizePerson = (p) => ({
+            name: p.name,
+            email: p.email,
+            phone: p.phone,
+            residenceType: p.type,                 // ✅ FIX
+            hostelName: p.hostel || undefined,     // ✅ FIX
+            wardenName: p.warden || undefined,     // ✅ FIX
+            hostelContact: p.hostelContact || undefined
         });
+
+        const teamData = {
+            teamname,
+            teamSize,
+            leader: normalizePerson(leader),
+            member1: normalizePerson(member1),
+            transactionId
+        };
+
+        if (teamSize >= 3) {
+            if (!member2) {
+                return res.status(400).json({ error: "Member 2 required" });
+            }
+            teamData.member2 = normalizePerson(member2);
+        }
+
+        if (teamSize === 4) {
+            if (!member3) {
+                return res.status(400).json({ error: "Member 3 required" });
+            }
+            teamData.member3 = normalizePerson(member3);
+        }
+
+        const team = new Team(teamData);
         await team.save();
-        await redis.del('teams:all');
-        res.status(201).json({ success: true, data: team });
+
+        await redis.del("teams:all");
+
+        res.status(201).json({
+            success: true,
+            message: "Team registered successfully",
+            data: team
+        });
+
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error("TEAM CREATE ERROR:", err);
+
+        if (err.name === "ValidationError") {
+            return res.status(400).json({ error: err.message });
+        }
+
+        res.status(500).json({ error: "Internal server error" });
     }
 });
+
 
 // GET - All teams (Protected for admin)
 app.get('/api/teams', verifyAdmin, async (req, res) => {

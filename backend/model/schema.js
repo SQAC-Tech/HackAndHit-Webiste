@@ -1,85 +1,148 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-// Email regex validation
+/* ================== REGEX ================== */
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// Phone regex (10 digits)
 const phoneRegex = /^[0-9]{10}$/;
 
-const memberSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: [true, 'Member name is required'],
-        trim: true,
-        minlength: [2, 'Name must be at least 2 characters']
-    },
-    email: {
-        type: String,
-        required: [true, 'Member email is required'],
-        trim: true,
-        lowercase: true,
-        match: [emailRegex, 'Please enter a valid email']
-    },
-    phone: {
-        type: String,
-        required: [true, 'Member phone is required'],
-        trim: true,
-        match: [phoneRegex, 'Phone must be 10 digits']
-    }
-}, { _id: false });
+/* ================== HOSTELS ================== */
+const HOSTELS = [
+    "Oori",
+    "Kaari",
+    "Paari",
+    "Adhyaman",
+    "Nelson Mandela",
+    "International Hostel",
+    "Agastyhar",
+    "Sannasi A",
+    "Sannasi C",
+    "M-block",
+    "Manoranjithm",
+    "N-block",
+    "Began",
+    "ESQ",
+    "Meenakshi",
+    "Kalpana Chawla",
+    "Other"
+];
 
-const teamSchema = new mongoose.Schema({
-    teamname: {
-        type: String,
-        required: [true, 'Team name is required'],
-        trim: true,
-        unique: true,
-        minlength: [3, 'Team name must be at least 3 characters']
-    },
-    teamSize: {
-        type: Number,
-        required: [true, 'Team size is required'],
-        min: [2, 'Minimum team size is 2'],
-        max: [4, 'Maximum team size is 4']
-    },
-    leader: {
+/* ================== PERSON (LEADER / MEMBER) ================== */
+const personSchema = new mongoose.Schema(
+    {
         name: {
             type: String,
-            required: [true, 'Leader name is required'],
+            required: [true, "Name is required"],
             trim: true,
-            minlength: [2, 'Name must be at least 2 characters']
+            minlength: 2
         },
         email: {
             type: String,
-            required: [true, 'Leader email is required'],
-            trim: true,
+            required: [true, "Email is required"],
             lowercase: true,
-            match: [emailRegex, 'Please enter a valid email']
+            match: [emailRegex, "Invalid email format"]
         },
         phone: {
             type: String,
-            required: [true, 'Leader phone is required'],
-            trim: true,
-            match: [phoneRegex, 'Phone must be 10 digits']
+            required: [true, "Phone number is required"],
+            match: [phoneRegex, "Phone must be 10 digits"]
+        },
+
+        /* ===== Day Scholar / Hosteler ===== */
+        residenceType: {
+            type: String,
+            required: true,
+            enum: ["dayscholar", "hosteler"]
+        },
+
+        /* ===== Hostel Fields (ONLY if hosteler) ===== */
+        hostelName: {
+            type: String,
+            enum: HOSTELS,
+            required: function () {
+                return this.residenceType === "hosteler";
+            }
+        },
+        wardenName: {
+            type: String,
+            minlength: 2,
+            required: function () {
+                return this.residenceType === "hosteler";
+            }
+        },
+        hostelContact: {
+            type: String,
+            match: phoneRegex,
+            required: function () {
+                return this.residenceType === "hosteler";
+            }
         }
     },
-    member1: {
-        type: memberSchema,
-        required: [true, 'Member 1 is required (minimum 2 members)']
-    },
-    member2: memberSchema,
-    member3: memberSchema,
-    registeredAt: {
-        type: Date,
-        default: Date.now
-    }
-}, { 
-    timestamps: true 
-});
+    { _id: false }
+);
 
-// Index for faster queries
-teamSchema.index({ 'leader.email': 1 });
+/* ================== TEAM SCHEMA ================== */
+const teamSchema = new mongoose.Schema(
+    {
+        teamname: {
+            type: String,
+            required: true,
+            unique: true,
+            trim: true,
+            minlength: 3
+        },
+
+        teamSize: {
+            type: Number,
+            required: true,
+            min: 2,
+            max: 4
+        },
+
+        leader: {
+            type: personSchema,
+            required: true
+        },
+
+        member1: {
+            type: personSchema,
+            required: true
+        },
+
+        member2: {
+            type: personSchema,
+            required: function () {
+                return this.teamSize >= 3;
+            }
+        },
+
+        member3: {
+            type: personSchema,
+            required: function () {
+                return this.teamSize === 4;
+            }
+        },
+
+        /* ================== PAYMENT ================== */
+        transactionId: {
+            type: String,
+            required: [true, "Transaction ID is required"],
+            trim: true,
+            minlength: [4, "Transaction ID is too short"]
+        },
+
+        registeredAt: {
+            type: Date,
+            default: Date.now
+        }
+    },
+    { timestamps: true }
+);
+
+/* ================== INDEXES ================== */
+teamSchema.index({ teamname: 1 });
+teamSchema.index({ "leader.email": 1 });
+teamSchema.index({ transactionId: 1 });
 teamSchema.index({ registeredAt: 1 });
 
-const Team = mongoose.model('Team', teamSchema);
-
+/* ================== EXPORT ================== */
+const Team = mongoose.model("Team", teamSchema);
 export default Team;

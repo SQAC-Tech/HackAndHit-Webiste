@@ -47,6 +47,31 @@ const AdminDashboard = () => {
             setTimeout(() => navigate("/login"), 1000);
         }
     };
+    const renderPersonDetails = (title, person) => {
+        if (!person) return null;
+
+        return (
+            <div className="mt-4 border-t border-orange-500/20 pt-3">
+                <h4 className="text-orange-400 font-semibold mb-2">{title}</h4>
+
+                <p><span className="text-orange-300">Name:</span> {person.name}</p>
+                <p><span className="text-orange-300">Email:</span> {person.email}</p>
+                <p><span className="text-orange-300">Phone:</span> {person.phone}</p>
+                <p>
+                    <span className="text-orange-300">Residence:</span>{" "}
+                    {person.residenceType === "hosteler" ? "Hosteler" : "Day Scholar"}
+                </p>
+
+                {person.residenceType === "hosteler" && (
+                    <div className="ml-3 mt-2 text-sm text-gray-300">
+                        <p>🏨 Hostel: {person.hostelName}</p>
+                        <p>👨‍🏫 Warden: {person.wardenName}</p>
+                        <p>☎️ Hostel Contact: {person.hostelContact}</p>
+                    </div>
+                )}
+            </div>
+        );
+    };
 
     const fetchData = async () => {
         setLoading(true);
@@ -286,40 +311,43 @@ const AdminDashboard = () => {
             )}
 
             {/* VIEW MODAL */}
+            {/* VIEW MODAL */}
             {selectedTeam && (
                 <div
                     className="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
                     onClick={() => setSelectedTeam(null)}
                 >
                     <div
-                        className="bg-[#120A3A] rounded-3xl p-6 w-[95%] max-w-xl border border-white/20"
+                        className="bg-[#120A3A] rounded-3xl p-6 w-[95%] max-w-xl border border-white/20 overflow-y-auto max-h-[90vh]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <h2 className="text-2xl font-bold mb-4">
+                        <h2 className="text-2xl font-bold mb-2">
                             {selectedTeam.teamname}
                         </h2>
 
-                        <div className="space-y-2">
-                            <p><span className="text-orange-400">Leader:</span> {selectedTeam.leader?.name}</p>
-                            <p><span className="text-orange-400">Email:</span> {selectedTeam.leader?.email}</p>
-                            <p><span className="text-orange-400">Phone:</span> {selectedTeam.leader?.phone}</p>
-                            <p><span className="text-orange-400">Registered:</span> {new Date(selectedTeam.registeredAt).toLocaleString()}</p>
-                        </div>
+                        <p className="text-sm text-gray-400 mb-4">
+                            Registered on {new Date(selectedTeam.registeredAt).toLocaleString()}
+                        </p>
 
-                        {["member1", "member2", "member3"].map(
-                            (key, i) =>
-                                selectedTeam[key]?.name && (
-                                    <div key={key} className="mt-4 border-t border-orange-500/20 pt-3">
-                                        <p className="text-orange-400 text-sm">Member {i + 1}</p>
-                                        <p>{selectedTeam[key].name} - {selectedTeam[key].email}</p>
-                                        <p className="text-gray-400 text-sm">{selectedTeam[key].phone}</p>
-                                    </div>
-                                )
+                        {/* Transaction ID */}
+                        {selectedTeam.transactionId && (
+                            <div className="mb-4 p-3 bg-black/30 rounded">
+                                <p className="text-orange-400 font-semibold">💳 Transaction ID</p>
+                                <p className="text-white break-all">{selectedTeam.transactionId}</p>
+                            </div>
                         )}
+
+                        {/* Leader */}
+                        {renderPersonDetails("Leader", selectedTeam.leader)}
+
+                        {/* Members */}
+                        {renderPersonDetails("Member 1", selectedTeam.member1)}
+                        {renderPersonDetails("Member 2", selectedTeam.member2)}
+                        {renderPersonDetails("Member 3", selectedTeam.member3)}
 
                         <button
                             onClick={() => setSelectedTeam(null)}
-                            className="mt-6 w-full py-3 rounded-full hover:cursor-pointer bg-orange-500 hover:bg-orange-600 font-bold"
+                            className="mt-6 w-full py-3 rounded-full bg-orange-500 hover:bg-orange-600 font-bold"
                         >
                             CLOSE
                         </button>
