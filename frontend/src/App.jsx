@@ -9,7 +9,7 @@ import AdminLogin from "./components/adminlogin";
 const App = () => {
     return (
         <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route path="/" element={<Form />} />
             <Route path="/form" element={<Form />} />
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<AdminDashboard />} />
