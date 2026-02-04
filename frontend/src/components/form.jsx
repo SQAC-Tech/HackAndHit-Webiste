@@ -1,8 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const Form = () => {
   const [formNum, setFormNum] = useState(1);
   const [teamSize, setTeamSize] = useState(1);
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
     teamname: "",
@@ -57,6 +62,36 @@ const Form = () => {
     runner.setAttribute("x", point.x - 12);
     runner.setAttribute("y", point.y + 12);
   }, [progress]);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const payload = {
+        teamname: form.teamname,
+        teamSize,
+        leadername: form.leadername,
+        leaderemail: form.leaderemail,
+        leaderphone: form.leaderphone,
+        member1name: form.member1name,
+        member1email: form.member1email,
+        member1phone: form.member1phone,
+        member2name: form.member2name,
+        member2email: form.member2email,
+        member2phone: form.member2phone,
+        member3name: form.member3name,
+        member3email: form.member3email,
+        member3phone: form.member3phone,
+      };
+
+      const res = await axios.post('http://localhost:3000/api/teams', payload);
+      toast.success("Team registered successfully!");
+      console.log(res.data);
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-[#211E4C] flex flex-col items-center">
@@ -133,13 +168,24 @@ const Form = () => {
               <option value={4}>4</option>
             </select>
 
-            <button
-              type="button"
-              onClick={() => setFormNum(2)}
-              className="rounded-3xl bg-blue-400 p-3 text-white text-lg"
-            >
-              Next
-            </button>
+            {teamSize === 1 ? (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="rounded-3xl bg-green-500 p-3 text-white text-lg disabled:opacity-50"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setFormNum(2)}
+                className="rounded-3xl bg-blue-400 p-3 text-white text-lg"
+              >
+                Next
+              </button>
+            )}
           </>
         )}
 
@@ -169,13 +215,24 @@ const Form = () => {
               }
             />
 
-            <button
-              type="button"
-              onClick={() => setFormNum(3)}
-              className="rounded-3xl bg-blue-400 p-3 text-white text-lg"
-            >
-              Next
-            </button>
+            {teamSize === 2 ? (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="rounded-3xl bg-green-500 p-3 text-white text-lg disabled:opacity-50"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setFormNum(3)}
+                className="rounded-3xl bg-blue-400 p-3 text-white text-lg"
+              >
+                Next
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setFormNum(1)}
@@ -212,13 +269,24 @@ const Form = () => {
               }
             />
 
-            <button
-              type="button"
-              onClick={() => setFormNum(4)}
-              className="rounded-3xl bg-blue-400 p-3 text-white text-lg"
-            >
-              Next
-            </button>
+            {teamSize === 3 ? (
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="rounded-3xl bg-green-500 p-3 text-white text-lg disabled:opacity-50"
+              >
+                {loading ? "Submitting..." : "Submit"}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setFormNum(4)}
+                className="rounded-3xl bg-blue-400 p-3 text-white text-lg"
+              >
+                Next
+              </button>
+            )}
             <button
               type="button"
               onClick={() => setFormNum(2)}
@@ -257,9 +325,11 @@ const Form = () => {
 
             <button
               type="button"
-              className="rounded-3xl bg-green-500 p-3 text-white text-lg"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="rounded-3xl bg-green-500 p-3 text-white text-lg disabled:opacity-50"
             >
-              Submit
+              {loading ? "Submitting..." : "Submit"}
             </button>
             <button
               type="button"
@@ -272,6 +342,7 @@ const Form = () => {
         )}
 
       </form>
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

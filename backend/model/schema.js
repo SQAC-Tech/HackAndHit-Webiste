@@ -54,8 +54,7 @@ const teamSchema = new mongoose.Schema({
     timestamps: true 
 });
 
-// Index for faster queries
-teamSchema.index({ teamname: 1 });
+// Index for faster queries (teamname already indexed via unique: true)
 teamSchema.index({ 'leader.email': 1 });
 
 const Team = mongoose.model('Team', teamSchema);
