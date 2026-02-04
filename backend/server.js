@@ -24,10 +24,12 @@ redis.on('connect', () => console.log('Redis connected'));
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: "https://hack-and-hit-webiste.vercel.app",
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());
@@ -83,10 +85,12 @@ app.post('/api/admin/login', async (req, res) => {
 
         const token = jwt.sign({ id: admin._id, username: admin.username }, JWT_SECRET, { expiresIn: '24h' });
 
-        res.cookie('adminToken', token, {
+        const isProd = process.env.NODE_ENV === "production";
+
+        res.cookie("adminToken", token, {
             httpOnly: true,
-            secure: false,     // localhost
-            sameSite: 'lax',   // ✅ FIX
+            secure: isProd,                  // ✅ true on Vercel
+            sameSite: isProd ? "none" : "lax",
             maxAge: 24 * 60 * 60 * 1000
         });
 
@@ -100,7 +104,12 @@ app.post('/api/admin/login', async (req, res) => {
 
 // Admin Logout
 app.post('/api/admin/logout', (req, res) => {
-    res.clearCookie('adminToken');
+    res.clearCookie("adminToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+    });
+
     res.json({ success: true, message: 'Logged out' });
 });
 
