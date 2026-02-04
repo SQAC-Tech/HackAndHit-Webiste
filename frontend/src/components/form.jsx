@@ -82,7 +82,7 @@ const Form = () => {
 
     setLoading(true);
     try {
-      await axios.post("http://localhost:3000/api/teams", {
+      await axios.post("https://hackandhit-webiste.onrender.com/api/teams", {
         teamname: form.teamname,
         teamSize,
         leader: {

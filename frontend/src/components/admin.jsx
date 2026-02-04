@@ -23,7 +23,7 @@ ChartJS.register(
     Legend
 );
 
-const API_URL = "http://localhost:3000/api";
+const API_URL = "https://hackandhit-webiste.onrender.com/api";
 
 const AdminDashboard = () => {
     const [teams, setTeams] = useState([]);
