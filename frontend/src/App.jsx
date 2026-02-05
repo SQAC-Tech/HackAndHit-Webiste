@@ -15,3 +15,4 @@ return (
     </Routes>
 );
 };
+export default App;
