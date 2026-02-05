@@ -4,10 +4,23 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const HOSTELS = [
-  "Oori","Kaari","Paari","Adhyaman","Nelson Mandela",
-  "International Hostel","Agastyhar","Sannasi A","Sannasi C",
-  "M-block","Manoranjithm","N-block","Began","ESQ",
-  "Meenakshi","Kalpana Chawla","Other"
+  "Oori",
+  "Kaari",
+  "Paari",
+  "Adhyaman",
+  "Nelson Mandela",
+  "International Hostel",
+  "Agastyhar",
+  "Sannasi A",
+  "Sannasi C",
+  "M-block",
+  "Manoranjithm",
+  "N-block",
+  "Began",
+  "ESQ",
+  "Meenakshi",
+  "Kalpana Chawla",
+  "Other",
 ];
 
 const Form = () => {
@@ -20,31 +33,53 @@ const Form = () => {
   const [form, setForm] = useState({
     teamname: "",
 
-    leaderemail: "", leadername: "", leaderphone: "",
-    leaderType: "dayscholar", leaderHostel: "", leaderWarden: "", leaderHostelContact: "",
+    leaderemail: "",
+    leadername: "",
+    leaderphone: "",
+    leaderType: "dayscholar",
+    leaderHostel: "",
+    leaderWarden: "",
+    leaderHostelContact: "",
 
-    member1email: "", member1name: "", member1phone: "",
-    member1Type: "dayscholar", member1Hostel: "", member1Warden: "", member1HostelContact: "",
+    member1email: "",
+    member1name: "",
+    member1phone: "",
+    member1Type: "dayscholar",
+    member1Hostel: "",
+    member1Warden: "",
+    member1HostelContact: "",
 
-    member2email: "", member2name: "", member2phone: "",
-    member2Type: "dayscholar", member2Hostel: "", member2Warden: "", member2HostelContact: "",
+    member2email: "",
+    member2name: "",
+    member2phone: "",
+    member2Type: "dayscholar",
+    member2Hostel: "",
+    member2Warden: "",
+    member2HostelContact: "",
 
-    member3email: "", member3name: "", member3phone: "",
-    member3Type: "dayscholar", member3Hostel: "", member3Warden: "", member3HostelContact: "",
+    member3email: "",
+    member3name: "",
+    member3phone: "",
+    member3Type: "dayscholar",
+    member3Hostel: "",
+    member3Warden: "",
+    member3HostelContact: "",
 
-    transactionId: ""
+    transactionId: "",
   });
 
+  /* ================= PREVIOUS BUTTON ================= */
   const PrevButton = () => (
     <button
       type="button"
-      onClick={() => setFormNum(p => Math.max(1, p - 1))}
+      onClick={() => setFormNum((p) => Math.max(1, p - 1))}
       className="w-full mt-3 bg-gray-600 p-4 rounded-full font-bold text-white"
     >
       ← Previous
     </button>
   );
 
+  /* ================= HOSTEL FIELDS ================= */
   const renderHostelFields = (prefix) =>
     form[`${prefix}Type`] === "hosteler" && (
       <>
@@ -52,35 +87,44 @@ const Form = () => {
         <select
           className="w-full p-4 mb-3 rounded bg-black/30"
           value={form[`${prefix}Hostel`]}
-          onChange={e => setForm({ ...form, [`${prefix}Hostel`]: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, [`${prefix}Hostel`]: e.target.value })
+          }
         >
           <option value="">Select Hostel</option>
-          {HOSTELS.map(h => <option key={h}>{h}</option>)}
+          {HOSTELS.map((h) => (
+            <option key={h}>{h}</option>
+          ))}
         </select>
 
         <label className="text-sm text-orange-300">Warden Name</label>
         <input
           className="w-full p-4 mb-3 rounded bg-black/30"
           value={form[`${prefix}Warden`]}
-          onChange={e => setForm({ ...form, [`${prefix}Warden`]: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, [`${prefix}Warden`]: e.target.value })
+          }
         />
 
         <label className="text-sm text-orange-300">Hostel Contact</label>
         <input
           className="w-full p-4 mb-4 rounded bg-black/30"
           value={form[`${prefix}HostelContact`]}
-          onChange={e => setForm({ ...form, [`${prefix}HostelContact`]: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, [`${prefix}HostelContact`]: e.target.value })
+          }
         />
       </>
     );
 
+  /* ================= MEMBER FORM ================= */
   const renderMember = (num) => {
     const p = `member${num}`;
     const isLastMember = num === teamSize - 1;
 
     return (
       <>
-        {["email","name","phone"].map(f => (
+        {["email", "name", "phone"].map((f) => (
           <div key={f} className="flex flex-col mb-4">
             <label className="text-sm text-orange-300">
               Member {num} {f.toUpperCase()}
@@ -88,7 +132,9 @@ const Form = () => {
             <input
               className="w-full p-4 rounded bg-black/30"
               value={form[`${p}${f}`]}
-              onChange={e => setForm({ ...form, [`${p}${f}`]: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, [`${p}${f}`]: e.target.value })
+              }
             />
           </div>
         ))}
@@ -97,15 +143,15 @@ const Form = () => {
         <select
           className="w-full p-4 mb-3 rounded bg-black/30"
           value={form[`${p}Type`]}
-          onChange={e =>
+          onChange={(e) =>
             setForm({
               ...form,
               [`${p}Type`]: e.target.value,
               ...(e.target.value === "dayscholar" && {
                 [`${p}Hostel`]: "",
                 [`${p}Warden`]: "",
-                [`${p}HostelContact`]: ""
-              })
+                [`${p}HostelContact`]: "",
+              }),
             })
           }
         >
@@ -130,6 +176,7 @@ const Form = () => {
     );
   };
 
+  /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
     if (loading) return;
     setLoading(true);
@@ -145,7 +192,7 @@ const Form = () => {
           type: form.leaderType,
           hostel: form.leaderHostel,
           warden: form.leaderWarden,
-          hostelContact: form.leaderHostelContact
+          hostelContact: form.leaderHostelContact,
         },
         member1: {
           name: form.member1name,
@@ -154,7 +201,7 @@ const Form = () => {
           type: form.member1Type,
           hostel: form.member1Hostel,
           warden: form.member1Warden,
-          hostelContact: form.member1HostelContact
+          hostelContact: form.member1HostelContact,
         },
         ...(teamSize >= 3 && {
           member2: {
@@ -164,8 +211,8 @@ const Form = () => {
             type: form.member2Type,
             hostel: form.member2Hostel,
             warden: form.member2Warden,
-            hostelContact: form.member2HostelContact
-          }
+            hostelContact: form.member2HostelContact,
+          },
         }),
         ...(teamSize === 4 && {
           member3: {
@@ -175,10 +222,10 @@ const Form = () => {
             type: form.member3Type,
             hostel: form.member3Hostel,
             warden: form.member3Warden,
-            hostelContact: form.member3HostelContact
-          }
+            hostelContact: form.member3HostelContact,
+          },
         }),
-        transactionId: form.transactionId
+        transactionId: form.transactionId,
       });
 
       toast.success("🏏 Team registered successfully!");
@@ -190,33 +237,88 @@ const Form = () => {
     }
   };
 
+  /* ================= UI ================= */
   return (
     <div className="min-h-screen bg-[#0B0633] flex flex-col items-center">
       <h1 className="text-4xl text-white mt-10 mb-6">🏏 HACK AND HIT</h1>
 
       <form className="bg-white/10 p-10 rounded-2xl w-[90%] max-w-xl text-white">
-
         {formNum === 1 && (
           <>
             <label className="text-sm text-orange-300">Team Name</label>
-            <input className="w-full p-4 mb-4 rounded bg-black/30"
+            <input
+              className="w-full p-4 mb-4 rounded bg-black/30"
               value={form.teamname}
-              onChange={e => setForm({ ...form, teamname: e.target.value })} />
+              onChange={(e) =>
+                setForm({ ...form, teamname: e.target.value })
+              }
+            />
+
+            <label className="text-sm text-orange-300">Leader Email</label>
+            <input
+              className="w-full p-4 mb-4 rounded bg-black/30"
+              value={form.leaderemail}
+              onChange={(e) =>
+                setForm({ ...form, leaderemail: e.target.value })
+              }
+            />
+
+            <label className="text-sm text-orange-300">Leader Name</label>
+            <input
+              className="w-full p-4 mb-4 rounded bg-black/30"
+              value={form.leadername}
+              onChange={(e) =>
+                setForm({ ...form, leadername: e.target.value })
+              }
+            />
+
+            <label className="text-sm text-orange-300">Leader Phone</label>
+            <input
+              className="w-full p-4 mb-4 rounded bg-black/30"
+              value={form.leaderphone}
+              onChange={(e) =>
+                setForm({ ...form, leaderphone: e.target.value })
+              }
+            />
+
+            <label className="text-sm text-orange-300">Leader Type</label>
+            <select
+              className="w-full p-4 mb-3 rounded bg-black/30"
+              value={form.leaderType}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  leaderType: e.target.value,
+                  ...(e.target.value === "dayscholar" && {
+                    leaderHostel: "",
+                    leaderWarden: "",
+                    leaderHostelContact: "",
+                  }),
+                })
+              }
+            >
+              <option value="dayscholar">Day Scholar</option>
+              <option value="hosteler">Hosteler</option>
+            </select>
+
+            {renderHostelFields("leader")}
 
             <label className="text-sm text-orange-300">Team Size</label>
             <select
-              className="w-full p-4 mb-6 rounded bg-orange-500 text-black"
+              className="w-full p-4 mb-6 rounded bg-orange-500 text-black font-bold"
               value={teamSize}
-              onChange={e => setTeamSize(Number(e.target.value))}
+              onChange={(e) => setTeamSize(Number(e.target.value))}
             >
               <option value={2}>2 Members</option>
               <option value={3}>3 Members</option>
               <option value={4}>4 Members</option>
             </select>
 
-            <button type="button"
+            <button
+              type="button"
               onClick={() => setFormNum(2)}
-              className="w-full bg-orange-500 p-4 rounded-full font-bold">
+              className="w-full bg-orange-500 p-4 rounded-full font-bold"
+            >
               Next
             </button>
           </>
@@ -229,17 +331,21 @@ const Form = () => {
         {formNum === paymentStep && (
           <>
             <img src="/QR.jpeg" className="w-40 mx-auto my-6" />
+
             <label className="text-sm text-orange-300">Transaction ID</label>
             <input
               className="w-full p-4 mb-6 rounded bg-black/30"
               value={form.transactionId}
-              onChange={e => setForm({ ...form, transactionId: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, transactionId: e.target.value })
+              }
             />
 
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-full bg-green-500 p-4 rounded-full font-bold">
+              className="w-full bg-green-500 p-4 rounded-full font-bold"
+            >
               Submit
             </button>
 
