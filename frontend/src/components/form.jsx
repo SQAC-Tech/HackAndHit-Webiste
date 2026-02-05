@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 const MOMENTS = ["SIX 🔥", "BOUNDARY 🏏"];
-
 const HOSTELS = [
   "Oori", "Kaari", "Paari", "Adhyaman", "Nelson Mandela",
   "International Hostel", "Agastyhar", "Sannasi A", "Sannasi C",
@@ -38,6 +36,7 @@ const Form = () => {
     transactionId: ""
   });
 
+  /* ================= PREVIOUS BUTTON ================= */
   const PrevButton = () => (
     <button
       type="button"
@@ -48,97 +47,40 @@ const Form = () => {
     </button>
   );
 
+  /* ================= HOSTEL FIELDS ================= */
   const renderHostelFields = (prefix) =>
     form[`${prefix}Type`] === "hosteler" && (
       <>
         <label className="text-sm text-orange-300">Hostel</label>
         <select
           className="w-full p-4 mb-3 rounded bg-black/30"
+          value={form[`${prefix}Hostel`]}
           onChange={e => setForm({ ...form, [`${prefix}Hostel`]: e.target.value })}
         >
           <option value="">Select Hostel</option>
-          {HOSTELS.map(h => <option key={h}>{h}</option>)}
+          {HOSTELS.map(h => <option key={h} value={h}>{h}</option>)}
         </select>
 
         <label className="text-sm text-orange-300">Warden Name</label>
         <input
           className="w-full p-4 mb-3 rounded bg-black/30"
+          value={form[`${prefix}Warden`]}
           onChange={e => setForm({ ...form, [`${prefix}Warden`]: e.target.value })}
         />
 
         <label className="text-sm text-orange-300">Hostel Contact</label>
         <input
           className="w-full p-4 mb-4 rounded bg-black/30"
+          value={form[`${prefix}HostelContact`]}
           onChange={e => setForm({ ...form, [`${prefix}HostelContact`]: e.target.value })}
         />
       </>
     );
 
-  const handleSubmit = async () => {
-    if (loading) return;
-
-    setMoment(MOMENTS[Math.floor(Math.random() * MOMENTS.length)]);
-    setTimeout(() => setMoment(null), 900);
-
-    setLoading(true);
-    try {
-      await axios.post("https://hackandhit-webiste.onrender.com/api/teams", {
-        teamname: form.teamname,
-        teamSize,
-        leader: {
-          name: form.leadername,
-          email: form.leaderemail,
-          phone: form.leaderphone,
-          type: form.leaderType,
-          hostel: form.leaderHostel,
-          warden: form.leaderWarden,
-          hostelContact: form.leaderHostelContact
-        },
-        member1: {
-          name: form.member1name,
-          email: form.member1email,
-          phone: form.member1phone,
-          type: form.member1Type,
-          hostel: form.member1Hostel,
-          warden: form.member1Warden,
-          hostelContact: form.member1HostelContact
-        },
-        ...(teamSize >= 3 && {
-          member2: {
-            name: form.member2name,
-            email: form.member2email,
-            phone: form.member2phone,
-            type: form.member2Type,
-            hostel: form.member2Hostel,
-            warden: form.member2Warden,
-            hostelContact: form.member2HostelContact
-          }
-        }),
-        ...(teamSize === 4 && {
-          member3: {
-            name: form.member3name,
-            email: form.member3email,
-            phone: form.member3phone,
-            type: form.member3Type,
-            hostel: form.member3Hostel,
-            warden: form.member3Warden,
-            hostelContact: form.member3HostelContact
-          }
-        }),
-        transactionId: form.transactionId
-      });
-
-      toast.success("🏏 Team registered successfully!");
-      setFormNum(1);
-    } catch (err) {
-      toast.error("Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  /* ================= MEMBER FORM ================= */
   const renderMember = (num) => {
     const p = `member${num}`;
+
     return (
       <>
         {["email", "name", "phone"].map(f => (
@@ -148,6 +90,7 @@ const Form = () => {
             </label>
             <input
               className="w-full p-4 rounded bg-black/30"
+              value={form[`${p}${f}`]}
               onChange={e => setForm({ ...form, [`${p}${f}`]: e.target.value })}
             />
           </div>
@@ -156,7 +99,18 @@ const Form = () => {
         <label className="text-sm text-orange-300">Member Type</label>
         <select
           className="w-full p-4 mb-3 rounded bg-black/30"
-          onChange={e => setForm({ ...form, [`${p}Type`]: e.target.value })}
+          value={form[`${p}Type`]}
+          onChange={e =>
+            setForm({
+              ...form,
+              [`${p}Type`]: e.target.value,
+              ...(e.target.value === "dayscholar" && {
+                [`${p}Hostel`]: "",
+                [`${p}Warden`]: "",
+                [`${p}HostelContact`]: ""
+              })
+            })
+          }
         >
           <option value="dayscholar">Day Scholar</option>
           <option value="hosteler">Hosteler</option>
@@ -165,6 +119,7 @@ const Form = () => {
         {renderHostelFields(p)}
 
         <button
+          type="button"
           onClick={() => setFormNum(formNum + 1)}
           className="w-full bg-orange-500 p-4 rounded-full font-bold"
         >
@@ -176,14 +131,75 @@ const Form = () => {
     );
   };
 
+  /* ================= SUBMIT ================= */
+  const handleSubmit = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    try {
+      await axios.post("https://hackandhit-webiste.onrender.com/api/teams", {
+        teamname: form.teamname,
+        teamSize,
+
+        leader: {
+          name: form.leadername,
+          email: form.leaderemail,
+          phone: form.leaderphone,
+          type: form.leaderType,
+          hostel: form.leaderHostel,
+          warden: form.leaderWarden,
+          hostelContact: form.leaderHostelContact
+        },
+
+        member1: {
+          name: form.member1name,
+          email: form.member1email,
+          phone: form.member1phone,
+          type: form.member1Type,
+          hostel: form.member1Hostel,
+          warden: form.member1Warden,
+          hostelContact: form.member1HostelContact
+        },
+
+        ...(teamSize >= 3 && {
+          member2: {
+            name: form.member2name,
+            email: form.member2email,
+            phone: form.member2phone,
+            type: form.member2Type,
+            hostel: form.member2Hostel,
+            warden: form.member2Warden,
+            hostelContact: form.member2HostelContact
+          }
+        }),
+
+        ...(teamSize === 4 && {
+          member3: {
+            name: form.member3name,
+            email: form.member3email,
+            phone: form.member3phone,
+            type: form.member3Type,
+            hostel: form.member3Hostel,
+            warden: form.member3Warden,
+            hostelContact: form.member3HostelContact
+          }
+        }),
+
+        transactionId: form.transactionId
+      });
+
+      toast.success("🏏 Team registered successfully!");
+      setFormNum(1);
+    } catch (err) {
+      toast.error(err.response?.data?.error || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /* ================= UI ================= */
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0B0633] via-[#140A52] to-[#0B0633] flex flex-col items-center">
-      {moment && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center">
-          <div className="text-6xl text-orange-500 animate-bounce">{moment}</div>
-        </div>
-      )}
-
       <h1 className="text-4xl text-white mt-10 mb-6">🏏 HACK AND HIT</h1>
 
       <form className="bg-white/10 p-10 rounded-2xl w-[90%] max-w-xl text-white flex flex-col">
@@ -192,23 +208,40 @@ const Form = () => {
           <>
             <label className="text-sm text-orange-300">Team Name</label>
             <input className="w-full p-4 mb-4 rounded bg-black/30"
+              value={form.teamname}
               onChange={e => setForm({ ...form, teamname: e.target.value })} />
 
             <label className="text-sm text-orange-300">Leader Email</label>
             <input className="w-full p-4 mb-4 rounded bg-black/30"
+              value={form.leaderemail}
               onChange={e => setForm({ ...form, leaderemail: e.target.value })} />
 
             <label className="text-sm text-orange-300">Leader Name</label>
             <input className="w-full p-4 mb-4 rounded bg-black/30"
+              value={form.leadername}
               onChange={e => setForm({ ...form, leadername: e.target.value })} />
 
             <label className="text-sm text-orange-300">Leader Phone</label>
             <input className="w-full p-4 mb-4 rounded bg-black/30"
+              value={form.leaderphone}
               onChange={e => setForm({ ...form, leaderphone: e.target.value })} />
 
             <label className="text-sm text-orange-300">Leader Type</label>
-            <select className="w-full p-4 mb-3 rounded bg-black/30"
-              onChange={e => setForm({ ...form, leaderType: e.target.value })}>
+            <select
+              className="w-full p-4 mb-3 rounded bg-black/30"
+              value={form.leaderType}
+              onChange={e =>
+                setForm({
+                  ...form,
+                  leaderType: e.target.value,
+                  ...(e.target.value === "dayscholar" && {
+                    leaderHostel: "",
+                    leaderWarden: "",
+                    leaderHostelContact: ""
+                  })
+                })
+              }
+            >
               <option value="dayscholar">Day Scholar</option>
               <option value="hosteler">Hosteler</option>
             </select>
@@ -216,14 +249,18 @@ const Form = () => {
             {renderHostelFields("leader")}
 
             <label className="text-sm text-orange-300">Team Size</label>
-            <select className="w-full p-4 mb-6 rounded bg-orange-500 text-black font-bold"
-              onChange={e => setTeamSize(Number(e.target.value))}>
+            <select
+              className="w-full p-4 mb-6 rounded bg-orange-500 text-black font-bold"
+              value={teamSize}
+              onChange={e => setTeamSize(Number(e.target.value))}
+            >
               <option value={2}>2 Members</option>
               <option value={3}>3 Members</option>
               <option value={4}>4 Members</option>
             </select>
 
             <button
+              type="button"
               onClick={() => setFormNum(2)}
               className="w-full bg-orange-500 p-4 rounded-full font-bold"
             >
@@ -243,11 +280,12 @@ const Form = () => {
             <label className="text-sm text-orange-300">Transaction ID</label>
             <input
               className="w-full p-4 mb-6 rounded bg-black/30"
+              value={form.transactionId}
               onChange={e => setForm({ ...form, transactionId: e.target.value })}
             />
 
             <button
-            type="submit"
+              type="button"
               onClick={handleSubmit}
               className="w-full bg-green-500 p-4 rounded-full font-bold"
             >
@@ -257,7 +295,6 @@ const Form = () => {
             <PrevButton />
           </>
         )}
-
       </form>
 
       <ToastContainer />

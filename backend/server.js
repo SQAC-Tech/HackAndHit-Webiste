@@ -23,13 +23,22 @@ redis.on('error', (err) => console.error('Redis Error:', err));
 redis.on('connect', () => console.log('Redis connected'));
 
 // Middleware
-app.use(cors({
-    origin: "https://hack-and-hit-webiste.vercel.app",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
+const allowedOrigins = [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://hack-and-hit-webiste.vercel.app"
+];
 
+app.use(cors({
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(null, false);
+        }
+    },
+    credentials: true
+}));
 
 app.use(express.json());
 app.use(cookieParser());
