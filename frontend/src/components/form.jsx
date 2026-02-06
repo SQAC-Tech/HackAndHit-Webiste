@@ -68,7 +68,6 @@ const Form = () => {
     transactionId: "",
   });
 
-  /* ================= PREVIOUS BUTTON ================= */
   const PrevButton = () => (
     <button
       type="button"
@@ -79,12 +78,13 @@ const Form = () => {
     </button>
   );
 
-  /* ================= HOSTEL FIELDS ================= */
   const renderHostelFields = (prefix) =>
     form[`${prefix}Type`] === "hosteler" && (
       <>
         <label className="text-sm text-orange-300">Hostel</label>
         <select
+          name={`${prefix}Hostel`}
+          autoComplete="off"
           className="w-full p-4 mb-3 rounded bg-black/30"
           value={form[`${prefix}Hostel`]}
           onChange={(e) =>
@@ -93,12 +93,17 @@ const Form = () => {
         >
           <option value="">Select Hostel</option>
           {HOSTELS.map((h) => (
-            <option key={h}>{h}</option>
+            <option key={h} value={h}>
+              {h}
+            </option>
           ))}
         </select>
 
         <label className="text-sm text-orange-300">Warden Name</label>
         <input
+          type="text"
+          name={`${prefix}Warden`}
+          autoComplete="name"
           className="w-full p-4 mb-3 rounded bg-black/30"
           value={form[`${prefix}Warden`]}
           onChange={(e) =>
@@ -108,6 +113,10 @@ const Form = () => {
 
         <label className="text-sm text-orange-300">Hostel Contact</label>
         <input
+          type="tel"
+          name={`${prefix}HostelContact`}
+          autoComplete="tel"
+          inputMode="numeric"
           className="w-full p-4 mb-4 rounded bg-black/30"
           value={form[`${prefix}HostelContact`]}
           onChange={(e) =>
@@ -117,30 +126,53 @@ const Form = () => {
       </>
     );
 
-  /* ================= MEMBER FORM ================= */
   const renderMember = (num) => {
     const p = `member${num}`;
     const isLastMember = num === teamSize - 1;
 
     return (
       <>
-        {["email", "name", "phone"].map((f) => (
-          <div key={f} className="flex flex-col mb-4">
-            <label className="text-sm text-orange-300">
-              Member {num} {f.toUpperCase()}
-            </label>
-            <input
-              className="w-full p-4 rounded bg-black/30"
-              value={form[`${p}${f}`]}
-              onChange={(e) =>
-                setForm({ ...form, [`${p}${f}`]: e.target.value })
-              }
-            />
-          </div>
-        ))}
+        <label className="text-sm text-orange-300">Member {num} Email</label>
+        <input
+          type="email"
+          name={`${p}email`}
+          autoComplete="email"
+          className="w-full p-4 mb-4 rounded bg-black/30"
+          value={form[`${p}email`]}
+          onChange={(e) =>
+            setForm({ ...form, [`${p}email`]: e.target.value })
+          }
+        />
+
+        <label className="text-sm text-orange-300">Member {num} Name</label>
+        <input
+          type="text"
+          name={`${p}name`}
+          autoComplete="name"
+          className="w-full p-4 mb-4 rounded bg-black/30"
+          value={form[`${p}name`]}
+          onChange={(e) =>
+            setForm({ ...form, [`${p}name`]: e.target.value })
+          }
+        />
+
+        <label className="text-sm text-orange-300">Member {num} Phone</label>
+        <input
+          type="tel"
+          name={`${p}phone`}
+          autoComplete="tel"
+          inputMode="numeric"
+          className="w-full p-4 mb-4 rounded bg-black/30"
+          value={form[`${p}phone`]}
+          onChange={(e) =>
+            setForm({ ...form, [`${p}phone`]: e.target.value })
+          }
+        />
 
         <label className="text-sm text-orange-300">Member Type</label>
         <select
+          name={`${p}Type`}
+          autoComplete="off"
           className="w-full p-4 mb-3 rounded bg-black/30"
           value={form[`${p}Type`]}
           onChange={(e) =>
@@ -176,56 +208,70 @@ const Form = () => {
     );
   };
 
-  /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
     if (loading) return;
     setLoading(true);
 
     try {
-      await axios.post("https://hackandhit-webiste.onrender.com/api/teams", {
-        teamname: form.teamname,
+      const inputs = document.querySelectorAll("input, select");
+      const syncedForm = { ...form };
+
+      inputs.forEach((el) => {
+        if (el.name && el.value) {
+          syncedForm[el.name] = el.value;
+        }
+      });
+
+      if (!syncedForm.transactionId) {
+        toast.error("Transaction ID is required");
+        setLoading(false);
+        return;
+      }
+
+      await axios.post("https://hackandhit-webiste.onrender.com/teams", {
+        teamname: syncedForm.teamname,
         teamSize,
         leader: {
-          name: form.leadername,
-          email: form.leaderemail,
-          phone: form.leaderphone,
-          type: form.leaderType,
-          hostel: form.leaderHostel,
-          warden: form.leaderWarden,
-          hostelContact: form.leaderHostelContact,
+          name: syncedForm.leadername,
+          email: syncedForm.leaderemail,
+          phone: syncedForm.leaderphone,
+          type: syncedForm.leaderType,
+          hostel: syncedForm.leaderHostel,
+          warden: syncedForm.leaderWarden,
+          hostelContact: syncedForm.leaderHostelContact,
         },
         member1: {
-          name: form.member1name,
-          email: form.member1email,
-          phone: form.member1phone,
-          type: form.member1Type,
-          hostel: form.member1Hostel,
-          warden: form.member1Warden,
-          hostelContact: form.member1HostelContact,
+          name: syncedForm.member1name,
+          email: syncedForm.member1email,
+          phone: syncedForm.member1phone,
+          type: syncedForm.member1Type,
+          hostel: syncedForm.member1Hostel,
+          warden: syncedForm.member1Warden,
+          hostelContact: syncedForm.member1HostelContact,
         },
         ...(teamSize >= 3 && {
           member2: {
-            name: form.member2name,
-            email: form.member2email,
-            phone: form.member2phone,
-            type: form.member2Type,
-            hostel: form.member2Hostel,
-            warden: form.member2Warden,
-            hostelContact: form.member2HostelContact,
+            name: syncedForm.member2name,
+            email: syncedForm.member2email,
+            phone: syncedForm.member2phone,
+            type: syncedForm.member2Type,
+            hostel: syncedForm.member2Hostel,
+            warden: syncedForm.member2Warden,
+            hostelContact: syncedForm.member2HostelContact,
           },
         }),
         ...(teamSize === 4 && {
           member3: {
-            name: form.member3name,
-            email: form.member3email,
-            phone: form.member3phone,
-            type: form.member3Type,
-            hostel: form.member3Hostel,
-            warden: form.member3Warden,
-            hostelContact: form.member3HostelContact,
+            name: syncedForm.member3name,
+            email: syncedForm.member3email,
+            phone: syncedForm.member3phone,
+            type: syncedForm.member3Type,
+            hostel: syncedForm.member3Hostel,
+            warden: syncedForm.member3Warden,
+            hostelContact: syncedForm.member3HostelContact,
           },
         }),
-        transactionId: form.transactionId,
+        transactionId: syncedForm.transactionId,
       });
 
       toast.success("🏏 Team registered successfully!");
@@ -237,7 +283,6 @@ const Form = () => {
     }
   };
 
-  /* ================= UI ================= */
   return (
     <div className="min-h-screen bg-[#0B0633] flex flex-col items-center">
       <h1 className="text-4xl text-white mt-10 mb-6">🏏 HACK AND HIT</h1>
@@ -247,6 +292,9 @@ const Form = () => {
           <>
             <label className="text-sm text-orange-300">Team Name</label>
             <input
+              type="text"
+              name="teamname"
+              autoComplete="organization"
               className="w-full p-4 mb-4 rounded bg-black/30"
               value={form.teamname}
               onChange={(e) =>
@@ -256,6 +304,9 @@ const Form = () => {
 
             <label className="text-sm text-orange-300">Leader Email</label>
             <input
+              type="email"
+              name="leaderemail"
+              autoComplete="email"
               className="w-full p-4 mb-4 rounded bg-black/30"
               value={form.leaderemail}
               onChange={(e) =>
@@ -265,6 +316,9 @@ const Form = () => {
 
             <label className="text-sm text-orange-300">Leader Name</label>
             <input
+              type="text"
+              name="leadername"
+              autoComplete="name"
               className="w-full p-4 mb-4 rounded bg-black/30"
               value={form.leadername}
               onChange={(e) =>
@@ -274,6 +328,10 @@ const Form = () => {
 
             <label className="text-sm text-orange-300">Leader Phone</label>
             <input
+              type="tel"
+              name="leaderphone"
+              autoComplete="tel"
+              inputMode="numeric"
               className="w-full p-4 mb-4 rounded bg-black/30"
               value={form.leaderphone}
               onChange={(e) =>
@@ -283,6 +341,7 @@ const Form = () => {
 
             <label className="text-sm text-orange-300">Leader Type</label>
             <select
+              name="leaderType"
               className="w-full p-4 mb-3 rounded bg-black/30"
               value={form.leaderType}
               onChange={(e) =>
@@ -334,6 +393,9 @@ const Form = () => {
 
             <label className="text-sm text-orange-300">Transaction ID</label>
             <input
+              type="text"
+              name="transactionId"
+              autoComplete="off"
               className="w-full p-4 mb-6 rounded bg-black/30"
               value={form.transactionId}
               onChange={(e) =>
