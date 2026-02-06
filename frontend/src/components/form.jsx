@@ -228,7 +228,7 @@ const Form = () => {
         return;
       }
 
-      await axios.post("https://hackandhit-webiste.onrender.com/teams", {
+      await axios.post("https://hackandhit-webiste.onrender.com/api/teams", {
         teamname: syncedForm.teamname,
         teamSize,
         leader: {
