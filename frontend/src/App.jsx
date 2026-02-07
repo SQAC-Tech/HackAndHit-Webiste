@@ -4,17 +4,24 @@ import Login from "./components/login";
 import Form from "./components/form";
 import AdminLogin from "./components/adminlogin";
 import MainSite from "./components/MainSite";
+import Footer from "./components/Footer";
 
-const App = () => {
+function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Form />} />
-      <Route path="/home" element={<MainSite />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/admin" element={<AdminDashboard />} />
-      <Route path="/adminlogin" element={<AdminLogin />} />
-      <Route path="/mainsite" element={<MainSite />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<Form />} />
+        <Route path="/home" element={<MainSite />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
+        <Route path="/mainsite" element={<MainSite />} />
+      </Routes>
+
+      {/* Footer will appear on all pages */}
+      <Footer />
+    </>
   );
-};
+}
+
 export default App;
