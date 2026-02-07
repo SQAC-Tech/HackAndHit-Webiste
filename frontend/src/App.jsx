@@ -3,16 +3,18 @@ import AdminDashboard from "./components/admin";
 import Login from "./components/login";
 import Form from "./components/form";
 import AdminLogin from "./components/adminlogin";
+import MainSite from "./components/MainSite";
 
 const App = () => {
-    return (
-        <Routes>
-            <Route path="/" element={<Form />} />
-            <Route path="/form" element={<Form />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/login" element={<AdminLogin />} />
-        </Routes>
-    );
+  return (
+    <Routes>
+      <Route path="/" element={<Form />} />
+      <Route path="/form" element={<Form />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/adminlogin" element={<AdminLogin />} />
+      <Route path="/mainsite" element={<MainSite />} />
+    </Routes>
+  );
 };
 export default App;
