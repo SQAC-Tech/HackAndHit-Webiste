@@ -1,53 +1,52 @@
 import React from "react";
 
 const Navbar = () => {
+  const items = [
+    { key: "home", name: "Home" },
+    { key: "domain", name: "Domains" },
+    { key: "timeline", name: "Timeline" },
+    { key: "faq", name: "FAQ" },
+  ];
+
   return (
-    <nav className="flex flex-col items-center p-0 w-full h-[100px] bg-[#082746]">
-      <div className="flex flex-row justify-between items-center p-0 gap-[622px] mx-auto w-[1312px] h-[43px] mt-[27px]">
-        <div className="flex flex-row items-center p-0 gap-6 w-[426px] h-[36px]">
-          {/* Logo Placeholder */}
-          <div className="w-[84px] h-[36px] bg-white relative">
-            {/* Logo Vectors - simplified */}
-            <div className="absolute inset-0 flex items-center justify-center text-black font-bold">
-              LOGO
-            </div>
-          </div>
-          <div className="flex flex-row items-center p-0 gap-8 w-[318px] h-[27px]">
+    <nav
+      className="
+        fixed top-3 left-45 -translate-x-1/2 overflow-x-hidden
+        z-50
+        w-[35%] lg:w-[95%] md:w-[50%] md:left-1/2 lg:left-1/2 max-w-4xl
+        h-14 sm:h-16 md:h-20
+        bg-white/10 backdrop-blur-md
+        rounded-xl border border-white/20
+        flex items-center justify-center
+      "
+    >
+      <ul
+        className="
+          flex items-center justify-center
+          gap-3 sm:gap-6
+          text-xs sm:text-sm md:text-lg
+          text-white
+        "
+      >
+        {items.map((item) => (
+          <li key={item.key}>
             <a
-              href="#"
-              className="text-white text-[18px] font-normal leading-[150%]"
+              href={`#${item.key}`}
+              className="
+                px-2 sm:px-3 md:px-4
+                py-1.5 sm:py-2
+                rounded-md
+                hover:text-orange-400
+                hover:bg-white/10
+                transition
+                whitespace-nowrap
+              "
             >
-              Home
+              {item.name}
             </a>
-            <a
-              href="#"
-              className="text-white text-[18px] font-normal leading-[150%]"
-            >
-              About
-            </a>
-            <a
-              href="#"
-              className="text-white text-[18px] font-normal leading-[150%]"
-            >
-              Team
-            </a>
-            <div className="flex flex-row items-center p-0 gap-1 w-[72px] h-[27px]">
-              <a
-                href="#"
-                className="text-white text-[18px] font-normal leading-[150%]"
-              >
-                More
-              </a>
-              <div className="w-6 h-6 text-white">▼</div>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-row items-center p-0 gap-4 w-[112px] h-[43px]">
-          <button className="flex flex-row justify-center items-center px-5 py-2 gap-2 w-[112px] h-[43px] bg-[#FF6B35] border border-[#FF6B35] text-white text-[18px] font-medium leading-[150%]">
-            Register
-          </button>
-        </div>
-      </div>
+          </li>
+        ))}
+      </ul>
     </nav>
   );
 };

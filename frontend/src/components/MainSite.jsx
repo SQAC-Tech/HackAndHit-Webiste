@@ -9,15 +9,17 @@ import Footer from "./Footer";
 
 const MainSite = () => {
   return (
+    <>
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <Hero />
-      <Timeline />
       <Domain />
+      <Timeline />
       <FAQ />
       <CTA />
       <Footer />
     </div>
+    </>
   );
 };
 
