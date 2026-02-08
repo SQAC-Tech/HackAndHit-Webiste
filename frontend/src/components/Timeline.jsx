@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import trophyImage from "../assests/download__7_-removebg-preview.png";
+import leftImage from "../../public/image.png";
 
 const Timeline = () => {
   const containerRef = useRef(null);
@@ -13,7 +14,7 @@ const Timeline = () => {
 
   const stages = [
     {
-      title: "LAUNCH",
+      title: "Launch & Registration",
       description: "Registration opens and teams begin forming their squads.",
       chips: [
         { label: "Registration", tooltip: "Sign up and form your team" },
@@ -22,16 +23,16 @@ const Timeline = () => {
       commentary: "The tournament begins with anticipation in the air.",
     },
     {
-      title: "KICKOFF",
-      description: "The challenge drops. Twenty-four hours on the clock.",
+      title: "Screening & PPT evaluation",
+      description: "Screening and elimination rounds to select the the best Ideas",
       chips: [
-        { label: "24 Hours", tooltip: "Non-stop coding marathon" },
-        { label: "Challenge Drop", tooltip: "Problem statement revealed" },
+        { label: "PPT", tooltip: "Non-stop coding marathon" },
+        { label: "Idea", tooltip: "Problem statement revealed" },
       ],
-      commentary: "The whistle blows, and the match is underway.",
+      commentary: "Toss.",
     },
     {
-      title: "BUILDING",
+      title: "PITCHING & CODING",
       description: "Teams code, debug, and iterate with mentor support.",
       chips: [
         { label: "Team Work", tooltip: "Collaborative development" },
@@ -40,7 +41,7 @@ const Timeline = () => {
       commentary: "Steady partnerships forming in the middle overs.",
     },
     {
-      title: "SUBMISSION",
+      title: "BUILDING",
       description: "Time's up. Final solutions are submitted.",
       chips: [
         { label: "Deadline", tooltip: "Final submission window" },
@@ -64,7 +65,7 @@ const Timeline = () => {
   return (
     <section
       ref={containerRef}
-      className="bg-slate-950 py-16 px-4 md:px-8 relative"
+      className="bg-gradient-to-b from-[#041323] to-slate-950 py-16 px-4 md:px-8 relative"
     >
       <div className="absolute inset-0 pointer-events-none z-0">
         <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
@@ -77,6 +78,29 @@ const Timeline = () => {
           <h2 className="text-white text-3xl sm:text-4xl md:text-5xl font-bold mb-6 md:mb-8 leading-tight">
             FIVE STAGES TO VICTORY
           </h2>
+          <div className="relative top-10">
+          <div className="hidden md:flex justify-center sticky top-24">
+            <img
+              src="/stumps.jpg"
+              alt="Timeline Illustration"
+              className="w-64 absolute left-0 h-100 lg:w-72 xl:w-100 object-contain opacity-80 rounded-xl shadow-lg "
+            />
+          </div>
+          <div className="hidden md:flex justify-center sticky top-24">
+            <img
+              src="/tech.jpg"
+              alt="Timeline Illustration"
+              className="w-64 absolute left-0 top-[450px] lg:w-72 xl:w-100 object-contain opacity-80 rounded-xl shadow-lg"
+            />
+          </div>
+          <div className="hidden md:flex justify-center sticky top-24">
+            <img
+              src="/setup.jpg"
+              alt="Timeline Illustration"
+              className="w-64 absolute left-0 top-[750px] lg:w-72 xl:w-100 object-contain opacity-80 rounded-xl shadow-lg"
+            />
+          </div>
+          </div>
         </div>
 
         <div className="relative">

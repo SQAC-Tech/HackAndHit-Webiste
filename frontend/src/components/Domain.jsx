@@ -102,25 +102,7 @@ const Domain = () => {
         ))}
       </div>
 
-      {/* CTA */}
-      <div className="mt-24 flex justify-center gap-8">
-        <button className="
-          px-8 py-3
-          rounded-full
-          border border-white/20
-          text-white text-lg font-medium
-          transition hover:bg-white/10
-        ">
-          Explore Tracks
-        </button>
-
-        <button className="
-          text-emerald-400 text-lg font-medium
-          hover:underline
-        ">
-          Learn More →
-        </button>
-      </div>
+      
     </section>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router";
 
 const HOSTELS = [
   "Oori",
@@ -24,6 +25,7 @@ const HOSTELS = [
 ];
 
 const Form = () => {
+  const navigate = useNavigate();
   const [formNum, setFormNum] = useState(1);
   const [teamSize, setTeamSize] = useState(2);
   const [loading, setLoading] = useState(false);
@@ -139,9 +141,7 @@ const Form = () => {
           autoComplete="email"
           className="w-full p-4 mb-4 rounded bg-black/30"
           value={form[`${p}email`]}
-          onChange={(e) =>
-            setForm({ ...form, [`${p}email`]: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, [`${p}email`]: e.target.value })}
         />
 
         <label className="text-sm text-orange-300">Member {num} Name</label>
@@ -151,9 +151,7 @@ const Form = () => {
           autoComplete="name"
           className="w-full p-4 mb-4 rounded bg-black/30"
           value={form[`${p}name`]}
-          onChange={(e) =>
-            setForm({ ...form, [`${p}name`]: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, [`${p}name`]: e.target.value })}
         />
 
         <label className="text-sm text-orange-300">Member {num} Phone</label>
@@ -164,9 +162,7 @@ const Form = () => {
           inputMode="numeric"
           className="w-full p-4 mb-4 rounded bg-black/30"
           value={form[`${p}phone`]}
-          onChange={(e) =>
-            setForm({ ...form, [`${p}phone`]: e.target.value })
-          }
+          onChange={(e) => setForm({ ...form, [`${p}phone`]: e.target.value })}
         />
 
         <label className="text-sm text-orange-300">Member Type</label>
@@ -195,9 +191,7 @@ const Form = () => {
 
         <button
           type="button"
-          onClick={() =>
-            setFormNum(isLastMember ? paymentStep : formNum + 1)
-          }
+          onClick={() => setFormNum(isLastMember ? paymentStep : formNum + 1)}
           className="w-full bg-orange-500 p-4 rounded-full font-bold"
         >
           Next
@@ -275,7 +269,7 @@ const Form = () => {
       });
 
       toast.success("🏏 Team registered successfully!");
-      setFormNum(1);
+      navigate("/");
     } catch (err) {
       toast.error(err.response?.data?.error || "Registration failed");
     } finally {
@@ -297,9 +291,7 @@ const Form = () => {
               autoComplete="organization"
               className="w-full p-4 mb-4 rounded bg-black/30"
               value={form.teamname}
-              onChange={(e) =>
-                setForm({ ...form, teamname: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, teamname: e.target.value })}
             />
 
             <label className="text-sm text-orange-300">Leader Email</label>
@@ -321,9 +313,7 @@ const Form = () => {
               autoComplete="name"
               className="w-full p-4 mb-4 rounded bg-black/30"
               value={form.leadername}
-              onChange={(e) =>
-                setForm({ ...form, leadername: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, leadername: e.target.value })}
             />
 
             <label className="text-sm text-orange-300">Leader Phone</label>

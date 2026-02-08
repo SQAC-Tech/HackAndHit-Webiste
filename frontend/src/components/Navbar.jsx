@@ -11,15 +11,31 @@ const Navbar = () => {
   return (
     <nav
       className="
-        fixed top-3 left-45 -translate-x-1/2 overflow-x-hidden
+        fixed top-3 left-1/2 -translate-x-1/2
         z-50
-        w-[35%] lg:w-[95%] md:w-[50%] md:left-1/2 lg:left-1/2 max-w-4xl
+        w-[92%] sm:w-[95%] md:w-[80%] lg:w-[40%]
+        max-w-4xl
         h-14 sm:h-16 md:h-20
         bg-white/10 backdrop-blur-md
-        rounded-xl border border-white/20
-        flex items-center justify-center
+        rounded-3xl border border-white/20
+        flex items-center justify-between
+        px-4 sm:px-6
       "
     >
+      {/* LOGO */}
+      <div className="flex items-center gap-2 shrink-0">
+        <img
+          src="/new-logo.png"
+          alt="Hack and Hit Logo"
+          className="
+            h-7 sm:h-8 md:h-10
+            w-auto
+            object-contain
+          "
+        />
+      </div>
+
+      {/* NAV LINKS */}
       <ul
         className="
           flex items-center justify-center

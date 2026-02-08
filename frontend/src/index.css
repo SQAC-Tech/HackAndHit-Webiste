@@ -110,3 +110,10 @@ hr {
 .footer-policy a:hover {
   color: #60a5fa;
 }
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  overflow-x: hidden;
+}
