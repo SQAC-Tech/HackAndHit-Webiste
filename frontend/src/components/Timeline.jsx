@@ -24,7 +24,8 @@ const Timeline = () => {
     },
     {
       title: "Screening & PPT evaluation",
-      description: "Screening and elimination rounds to select the the best Ideas",
+      description:
+        "Screening and elimination rounds to select the the best Ideas",
       chips: [
         { label: "PPT", tooltip: "Non-stop coding marathon" },
         { label: "Idea", tooltip: "Problem statement revealed" },
@@ -79,27 +80,13 @@ const Timeline = () => {
             FIVE STAGES TO VICTORY
           </h2>
           <div className="relative top-10">
-          <div className="hidden md:flex justify-center sticky top-24">
-            <img
-              src="/stumps.jpg"
-              alt="Timeline Illustration"
-              className="w-64 absolute left-0 h-100 lg:w-72 xl:w-100 object-contain opacity-80 rounded-xl shadow-lg "
-            />
-          </div>
-          <div className="hidden md:flex justify-center sticky top-24">
-            <img
-              src="/tech.jpg"
-              alt="Timeline Illustration"
-              className="w-64 absolute left-0 top-[450px] lg:w-72 xl:w-100 object-contain opacity-80 rounded-xl shadow-lg"
-            />
-          </div>
-          <div className="hidden md:flex justify-center sticky top-24">
-            <img
-              src="/setup.jpg"
-              alt="Timeline Illustration"
-              className="w-64 absolute left-0 top-[750px] lg:w-72 xl:w-100 object-contain opacity-80 rounded-xl shadow-lg"
-            />
-          </div>
+            <div className="hidden md:flex justify-center sticky top-24">
+              <img
+                src="/Left_side_image.png"
+                alt="Timeline Illustration"
+                className="w-64 absolute top-[-200px] left-[-60px] h-400 lg:w-72 xl:w-[800px] object-contain opacity-80 rounded-xl shadow-lg "
+              />
+            </div>
           </div>
         </div>
 
