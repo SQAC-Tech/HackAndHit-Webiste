@@ -33,7 +33,7 @@ const Footer = () => {
         {/* DESCRIPTION */}
         <div className="text-center lg:text-left">
           <p className="text-base sm:text-lg max-w-md mx-auto lg:mx-0">
-            Get the latest updates on Hack and Hit USA events and announcements.
+            Get the latest updates on Hack and Hit.....
           </p>
         </div>
 
