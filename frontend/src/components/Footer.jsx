@@ -1,79 +1,99 @@
-import "./Footer.css";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaYoutube } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
+import { FaInstagram, FaLinkedinIn } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="footer-top">
-        {/* Left Section */}
-        <div className="footer-brand">
-          {/* Logo from public folder */}
+    <footer className="bg-[#020b16] text-gray-300 px-6 sm:px-10 lg:px-20 py-16">
+      {/* TOP */}
+      <div
+        className="
+          max-w-7xl mx-auto
+          grid grid-cols-1 gap-12
+          lg:grid-cols-3 lg:items-center
+        "
+      >
+        {/* BRAND / LOGOS */}
+        <div
+          className="
+            flex flex-col items-center text-center gap-4
+            lg:flex-row lg:items-center lg:text-left lg:gap-6
+          "
+        >
           <img
             src="/Logo.png"
-            alt="Hack and Hit USA Logo"
-            className="footer-logo"
+            alt="Hack and Hit Logo"
+            className="w-20"
           />
+          <img
+            src="/new-logo.png"
+            alt="Hack and Hit Logo"
+            className="w-40"
+          />
+        </div>
 
-          <p>
-            Get the latest updates on Hack and Hit USA events and
-            announcements.
+        {/* DESCRIPTION */}
+        <div className="text-center lg:text-left">
+          <p className="text-base sm:text-lg max-w-md mx-auto lg:mx-0">
+            Get the latest updates on Hack and Hit USA events and announcements.
           </p>
-
-          <div className="subscribe">
-            <input type="email" placeholder="Your email" />
-            <button>Subscribe</button>
-          </div>
-
-          <small>
-            By subscribing you agree to our{" "}
-            <span>Privacy Policy</span> and consent to receive updates.
-          </small>
         </div>
 
-        {/* Navigation */}
-        <div className="footer-links">
-          <h4>Navigation</h4>
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/team">Team</a>
-          <a href="/schedule">Schedule</a>
-          <a href="/register">Registration</a>
-        </div>
+        {/* NAV + SOCIAL (RIGHT SIDE ON LAPTOP) */}
+        <div
+          className="
+            flex flex-col items-center gap-6
+            lg:items-end lg:text-right
+          "
+        >
+          {/* Navigation */}
+          <ul className="flex flex-col sm:flex-row gap-4 sm:gap-6 text-base sm:text-lg">
+            <li>
+              <a href="#home" className="hover:text-blue-400 transition">
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="#domain" className="hover:text-blue-400 transition">
+                Domain
+              </a>
+            </li>
+            <li>
+              <a href="#timeline" className="hover:text-blue-400 transition">
+                Timeline
+              </a>
+            </li>
+            <li>
+              <a href="#faq" className="hover:text-blue-400 transition">
+                FAQ
+              </a>
+            </li>
+          </ul>
 
-        {/* Resources */}
-        <div className="footer-links">
-          <h4>Resources</h4>
-          <a href="/faq">FAQ</a>
-          <a href="/rules">Rules</a>
-          <a href="/judges">Judges</a>
-          <a href="/sponsors">Sponsors</a>
-          <a href="/contact">Contact</a>
-        </div>
-
-        {/* Social */}
-        <div className="footer-links">
-          <h4>Follow us</h4>
-          <div className="social-links">
-            <a href="#"><FaFacebookF /></a>
-            <a href="#"><FaInstagram /></a>
-            <a href="#"><FaXTwitter /></a>
-            <a href="#"><FaLinkedinIn /></a>
-            <a href="#"><FaYoutube /></a>
+          {/* Social */}
+          <div className="flex gap-5 text-xl text-white">
+            <a
+              href="https://www.instagram.com/sqac.srmist?igsh=MTNlMTJmZmtvMW82ag=="
+              className="hover:text-blue-400 transition"
+              aria-label="Instagram"
+            >
+              <FaInstagram />
+            </a>
+            <a
+              href="https://www.linkedin.com/company/sqacsrm"
+              className="hover:text-blue-400 transition"
+              aria-label="LinkedIn"
+            >
+              <FaLinkedinIn />
+            </a>
           </div>
         </div>
       </div>
 
-      <hr />
+      {/* DIVIDER */}
+      <div className="border-t border-[#1f2933] my-10"></div>
 
-      {/* Bottom */}
-      <div className="footer-bottom">
-        <p>© 2025 Hack and Hit USA. All rights reserved.</p>
-        <div className="footer-policy">
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of service</a>
-          <a href="/cookies">Cookies settings</a>
-        </div>
+      {/* BOTTOM */}
+      <div className="text-center text-base sm:text-lg text-gray-400">
+        © 2026 Hack and Hit SQAC. All rights reserved.
       </div>
     </footer>
   );
