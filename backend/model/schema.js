@@ -46,14 +46,12 @@ const personSchema = new mongoose.Schema(
             match: [phoneRegex, "Phone must be 10 digits"]
         },
 
-        /* ===== Day Scholar / Hosteler ===== */
         residenceType: {
             type: String,
             required: true,
             enum: ["dayscholar", "hosteler"]
         },
 
-        /* ===== Hostel Fields (ONLY if hosteler) ===== */
         hostelName: {
             type: String,
             enum: HOSTELS,
@@ -121,13 +119,19 @@ const teamSchema = new mongoose.Schema(
             }
         },
 
-        /* ================== PAYMENT ================== */
         transactionId: {
             type: String,
             required: [true, "Transaction ID is required"],
             trim: true,
             minlength: [4, "Transaction ID is too short"]
         },
+
+        /* ================== STATUS TAGS ================== */
+        pptSubmitted: { type: Boolean, default: false },
+        mailSent: { type: Boolean, default: false },
+        round1: { type: Boolean, default: false },
+        round2: { type: Boolean, default: false },
+        round3: { type: Boolean, default: false },
 
         registeredAt: {
             type: Date,
