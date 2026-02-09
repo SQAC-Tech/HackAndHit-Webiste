@@ -3,7 +3,7 @@ import { FaInstagram, FaLinkedinIn } from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="bg-[#020b16] text-gray-300 px-6 sm:px-10 lg:px-20 py-16">
-      {/* TOP */}
+
       <div
         className="
           max-w-7xl mx-auto
@@ -11,7 +11,7 @@ const Footer = () => {
           lg:grid-cols-3 lg:items-center
         "
       >
-        {/* BRAND / LOGOS */}
+
         <div
           className="
             flex flex-col items-center text-center gap-4
@@ -30,21 +30,21 @@ const Footer = () => {
           />
         </div>
 
-        {/* DESCRIPTION */}
+
         <div className="text-center lg:text-left">
           <p className="text-base sm:text-lg max-w-md mx-auto lg:mx-0">
             Get the latest updates on Hack and Hit.....
           </p>
         </div>
 
-        {/* NAV + SOCIAL (RIGHT SIDE ON LAPTOP) */}
+
         <div
           className="
             flex flex-col items-center gap-6
             lg:items-end lg:text-right
           "
         >
-          {/* Navigation */}
+
           <ul className="flex flex-col sm:flex-row gap-4 sm:gap-6 text-base sm:text-lg">
             <li>
               <a href="#home" className="hover:text-blue-400 transition">
@@ -68,7 +68,7 @@ const Footer = () => {
             </li>
           </ul>
 
-          {/* Social */}
+
           <div className="flex gap-5 text-xl text-white">
             <a
               href="https://www.instagram.com/sqac.srmist?igsh=MTNlMTJmZmtvMW82ag=="
@@ -88,10 +88,10 @@ const Footer = () => {
         </div>
       </div>
 
-      {/* DIVIDER */}
+
       <div className="border-t border-[#1f2933] my-10"></div>
 
-      {/* BOTTOM */}
+
       <div className="text-center text-base sm:text-lg text-gray-400">
         © 2026 Hack and Hit SQAC. All rights reserved.
       </div>

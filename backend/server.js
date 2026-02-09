@@ -87,6 +87,28 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.get("/api/teamleader-basic", async (req, res) => {
+  try {
+    const cached = await redis.get("teams:basic");
+
+    if (cached) {
+      return res.json({ cached: true, data: JSON.parse(cached) });
+    }
+
+    const teams = await Team.find()
+      .select("teamname leader.name leader.phone leader.email -_id")
+      .sort({ registeredAt: -1 });
+
+    await redis.setEx("teams:basic", 300, JSON.stringify(teams));
+
+    res.json({ cached: false, data: teams });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 // ================= ADMIN AUTH =================
 app.post('/api/admin/login', async (req, res) => {
     try {
