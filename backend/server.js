@@ -96,7 +96,7 @@ app.get("/api/teamleader-basic", async (req, res) => {
     }
 
     const teams = await Team.find()
-      .select("teamname leader.name leader.phone -_id")
+      .select("teamname leader.name leader.phone leader.email -_id")
       .sort({ registeredAt: -1 });
 
     await redis.setEx("teams:basic", 300, JSON.stringify(teams));
