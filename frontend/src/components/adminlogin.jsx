@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "https://hack-and-hit-webiste.vercel.app/api";
+const API_URL = "POST https://hack-and-hit-webiste.vercel.app/api/admin/login";
 
 export default function AdminLogin() {
     const [username, setUsername] = useState("");
