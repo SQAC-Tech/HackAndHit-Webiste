@@ -89,7 +89,7 @@ const PPTSubmit = () => {
             </div>
 
             <a
-              href="https://your-template-link-here"
+              href="https://docs.google.com/presentation/d/1FPtwQBgTKFxkW4g17L6zZmzUYElbTbTz1dV1XP9QzrI/edit?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               className="
@@ -105,6 +105,54 @@ const PPTSubmit = () => {
               Open Template
             </a>
           </div>
+
+          {/* Submission Guidelines */}
+          <div
+            className="
+              mb-12
+              bg-white/5
+              border border-white/10
+              rounded-xl
+              p-6
+            "
+          >
+            <h3 className="text-white text-xl font-semibold mb-4">
+              Submission Guidelines
+            </h3>
+
+            <ul className="space-y-3 text-white/70 text-sm leading-relaxed">
+              <li className="flex gap-2">
+                <span className="text-emerald-400">•</span>
+                Make a copy of the template above and work on your presentation
+              </li>
+
+              <li className="flex gap-2">
+                <span className="text-emerald-400">•</span>
+                Ensure your presentation is complete and properly formatted
+              </li>
+
+              <li className="flex gap-2">
+                <span className="text-emerald-400">•</span>
+                Set sharing permissions to <b>“Anyone with the link can view”</b>
+              </li>
+
+              <li className="flex gap-2">
+                <span className="text-emerald-400">•</span>
+                Copy the Google Slides URL from your browser
+              </li>
+
+              <li className="flex gap-2">
+                <span className="text-emerald-400">•</span>
+                Paste the URL in the submission form below
+              </li>
+
+              <li className="flex gap-2">
+                <span className="text-emerald-400">•</span>
+                You can resubmit if you need to make changes
+              </li>
+            </ul>
+          </div>
+
 
           {/* Submission */}
           <div className="flex flex-col gap-4">
