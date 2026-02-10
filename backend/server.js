@@ -32,7 +32,8 @@ redis.on('connect', () => console.log('Redis connected'));
 const allowedOrigins = [
     "http://localhost:5173",
     "http://localhost:3000",
-    "https://hack-and-hit-webiste.vercel.app"
+    "https://hack-and-hit-webiste.vercel.app",
+    "https://hack-and-hit-webiste-1m4k.vercel.app"
 ];
 
 app.use(cors({
