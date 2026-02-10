@@ -19,7 +19,7 @@ const TeamLogin = () => {
 
     try {
       const res = await axios.get(
-        "https://hack-and-hit-webiste.vercel.app/api/teamleader-basic"
+        "https://hackandhit-webiste.onrender.com/api/teamleader-basic"
       );
 
       const teams = res.data.data;

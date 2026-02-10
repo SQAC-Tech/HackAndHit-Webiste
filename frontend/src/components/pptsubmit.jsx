@@ -25,7 +25,7 @@ const PPTSubmit = () => {
     setLoading(true);
 
     try {
-      await axios.patch("https://hack-and-hit-webiste.vercel.app/api/ppt-submit", {
+      await axios.patch("https://hackandhit-webiste.onrender.com/api/ppt-submit", {
         email: team.leader.email,
         pptLink,
       });

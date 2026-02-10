@@ -1,13 +1,17 @@
 import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: false, // true only for 465
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
-});
+export const createTransporter = (mode = "test") => {
+    const isLive = mode === "live";
 
-export default transporter;
+    const transporter = nodemailer.createTransport({
+        host: isLive ? process.env.SMTP_LIVE_HOST : process.env.SMTP_TEST_HOST,
+        port: isLive ? process.env.SMTP_LIVE_PORT : process.env.SMTP_TEST_PORT,
+        secure: false,
+        auth: {
+            user: isLive ? process.env.SMTP_LIVE_USER : process.env.SMTP_TEST_USER,
+            pass: isLive ? process.env.SMTP_LIVE_PASS : process.env.SMTP_TEST_PASS,
+        },
+    });
+
+    return transporter;
+};

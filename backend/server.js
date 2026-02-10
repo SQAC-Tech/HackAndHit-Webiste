@@ -323,160 +323,71 @@ app.patch("/api/ppt-submit", async (req, res) => {
 //mass mailer
 
 app.post("/api/mass-mail", async (req, res) => {
-  try {
-    const { subject, message, mode, testEmail, ccEmails, bccEmails } = req.body;
+    try {
+        const { subject, message, mode } = req.body;
 
-    if (!subject || !message) {
-      return res.status(400).json({
-        error: "Subject and message required",
-      });
-    }
+        const transporter = createTransporter(mode);
 
-    // =======================
-    // 🧪 MODE 1: SINGLE TEST
-    // =======================
-    if (mode === "test") {
-      console.warn("🧪 MODE: SINGLE TEST");
+        if (mode === "live") {
 
-      if (!testEmail) {
-        return res.status(400).json({
-          error: "testEmail is required in test mode",
-        });
-      }
+            const teams = await Team.find().select("leader.email -_id").lean();
+            const recipients = teams.map(t => t.leader?.email).filter(Boolean);
 
-      await transporter.sendMail({
-        from: `"Hack & Hit" <${process.env.SMTP_USER}>`,
-        to: testEmail,
-        subject: `[TEST] ${subject}`,
-        html: `<p>${message}</p>`,
-      });
+            const sent = [];
+            const failed = [];
 
-      return res.json({
-        success: true,
-        mode,
-        sentCount: 1,
-        sent: [testEmail],
-        failed: [],
-      });
-    }
+            for (const email of recipients) {
+                try {
+                    console.log("Sending to:", email);
 
-    // =======================
-    // 🧪 MODE 2: CC / BCC TEST
-    // =======================
-    if (mode === "cc-bcc-test") {
-      console.warn("🧪 MODE: CC / BCC TEST");
+                    await transporter.sendMail({
+                        from: `"Hack & Hit" <${process.env.SMTP_LIVE_USER}>`,
+                        cc: process.env.LIVE_CC_EMAIL,
+                        bcc: email,
+                        subject,
+                        html: `<p>${message}</p>`
+                    });
 
-      const testTo = "akasharmaraghav@gmail.com";
-      const testCc = "akasharmaraghav+cc@gmail.com";
-      const testBcc = "akasharmaraghav+bcc@gmail.com";
+                    sent.push(email);
+                    console.log("Sent:", email);
 
-      await transporter.sendMail({
-        from: `"Hack & Hit" <${process.env.SMTP_USER}>`,
-        to: testTo,
-        cc: [testCc],
-        bcc: [testBcc],
-        subject: `[CC/BCC TEST] ${subject}`,
-        html: `<p>${message}</p>`,
-      });
+                } catch (err) {
+                    console.error("Failed:", email, err.message);
+                    failed.push(email);
+                }
+            }
 
-      return res.json({
-        success: true,
-        mode,
-        sentCount: 3,
-        sent: [testTo, testCc, testBcc],
-        failed: [],
-      });
-    }
-
-    // =======================
-    // 🚨 MODE 3: LIVE MASS MAIL (WITH CC/BCC)
-    // =======================
-    if (mode === "live") {
-      console.warn("🚨 MODE: LIVE MASS MAIL");
-
-      const teams = await Team.find()
-        .select("leader.email -_id")
-        .lean();
-
-      const recipients = teams
-        .map(t => t.leader?.email)
-        .filter(Boolean);
-
-      if (!recipients.length) {
-        return res.status(400).json({
-          error: "No recipients found",
-        });
-      }
-
-      // ✅ Normalize CC & BCC (optional)
-      const ccList = ccEmails
-        ? Array.isArray(ccEmails) ? ccEmails : [ccEmails]
-        : [];
-
-      const bccList = bccEmails
-        ? Array.isArray(bccEmails) ? bccEmails : [bccEmails]
-        : [];
-
-      const sent = [];
-      const failed = [];
-
-      // 🔁 SEND ONE BY ONE (FAILURE SAFE)
-      for (const email of recipients) {
-        try {
-          await transporter.sendMail({
-            from: `"Hack & Hit" <${process.env.SMTP_USER}>`,
-            to: email,
-            cc: ccList.length ? ccList : undefined,
-            bcc: bccList.length ? bccList : undefined,
-            subject,
-            html: `<p>${message}</p>`,
-          });
-
-          sent.push(email);
-        } catch (err) {
-          console.error("❌ Mail failed for:", email);
-          failed.push(email);
+            return res.json({
+                success: true,
+                total: recipients.length,
+                sentCount: sent.length,
+                failedCount: failed.length,
+                sent,
+                failed
+            });
         }
-      }
 
-      // ✅ UPDATE DB ONLY FOR SUCCESSFUL MAILS
-      if (sent.length > 0) {
-        await Team.updateMany(
-          { "leader.email": { $in: sent } },
-          { $set: { mailSent: true } }
-        );
-      }
+        // TEST MODE
+        if (mode === "test") {
+            await transporter.sendMail({
+                from: `"Hack & Hit" <${process.env.SMTP_TEST_USER}>`,
+                to: req.body.testEmail,
+                subject,
+                html: `<p>${message}</p>`
+            });
 
-      return res.json({
-        success: true,
-        mode,
-        total: recipients.length,
-        sentCount: sent.length,
-        failedCount: failed.length,
-        cc: ccList,
-        bcc: bccList,
-        sent,
-        failed,
-      });
+            return res.json({ success: true, sent: [req.body.testEmail] });
+        }
+
+    } catch (err) {
+        console.error("Mailer error:", err);
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
     }
-
-    // =======================
-    // ❌ INVALID MODE
-    // =======================
-    return res.status(400).json({
-      error: "Invalid mode. Use test | cc-bcc-test | live",
-    });
-
-  } catch (err) {
-    console.error("Mass mail error:", err);
-    res.status(500).json({
-      error: "Mail sending failed",
-    });
-  }
 });
-
-
-//rounds 
+//rounds
 app.patch("/api/teams/:id/round", verifyAdmin, async (req, res) => {
     try {
         const { round } = req.body;
@@ -515,5 +426,3 @@ app.patch("/api/teams/:id/round", verifyAdmin, async (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
-
-

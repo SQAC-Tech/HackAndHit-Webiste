@@ -3,6 +3,8 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const API_URL = "https://hackandhit-webiste.onrender.com/api/mass-mail";
+
 const MODES = {
   TEST: "test",
   CC_BCC_TEST: "cc-bcc-test",
@@ -14,6 +16,8 @@ const AdminMailer = () => {
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [testEmail, setTestEmail] = useState("");
+  const [ccEmails, setCcEmails] = useState("");
+  const [bccEmails, setBccEmails] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSend = async () => {
@@ -23,15 +27,12 @@ const AdminMailer = () => {
     }
 
     if (mode === MODES.TEST && !testEmail.trim()) {
-      toast.error("Test email is required in Test mode");
+      toast.error("Test email required");
       return;
     }
 
     if (mode === MODES.LIVE) {
-      const confirm = window.confirm(
-        "⚠️ You are about to send a LIVE mass mail to ALL team leaders.\n\nAre you absolutely sure?"
-      );
-      if (!confirm) return;
+      if (!window.confirm("Send LIVE mail to ALL participants?")) return;
     }
 
     setLoading(true);
@@ -43,26 +44,29 @@ const AdminMailer = () => {
         message,
       };
 
-      if (mode === MODES.TEST) {
-        payload.testEmail = testEmail;
+      if (mode === MODES.TEST) payload.testEmail = testEmail;
+
+      if (mode === MODES.CC_BCC_TEST) {
+        payload.ccEmails = ccEmails.split(",").map(e => e.trim());
+        payload.bccEmails = bccEmails.split(",").map(e => e.trim());
       }
 
-      const res = await axios.post(
-        "https://hack-and-hit-webiste.vercel.app/api/mass-mail",
-        payload
-      );
+      const res = await axios.post(API_URL, payload);
 
-      toast.success(
-        `Mail sent (${res.data.mode}) to ${res.data.recipientsCount} recipient(s)`
-      );
-
-      if (mode !== MODES.LIVE) {
-        setMessage("");
-        setSubject("");
+      // 🔥 Live mode: show toast for each sent mail
+      if (mode === MODES.LIVE && res.data.sent) {
+        res.data.sent.forEach(email => {
+          toast.success(`Mail sent → ${email}`);
+        });
+      } else {
+        toast.success("Mail sent successfully");
       }
+
+      setSubject("");
+      setMessage("");
+
     } catch (err) {
-      toast.error("Failed to send mail");
-      console.error(err);
+      toast.error("Mail sending failed");
     } finally {
       setLoading(false);
     }
@@ -73,135 +77,77 @@ const AdminMailer = () => {
       <ToastContainer />
 
       <div className="min-h-screen bg-[#041323] px-6 py-20 flex justify-center">
-        <div className="
-          w-full max-w-3xl
-          bg-white/5
-          backdrop-blur-xl
-          border border-white/10
-          rounded-2xl
-          p-10
-          shadow-[0_30px_80px_rgba(0,0,0,0.45)]
-        ">
-          {/* Header */}
-          <div className="text-center mb-10">
-            <h1 className="text-white text-4xl font-bold">
-              Mass Mailer
-            </h1>
-            <p className="mt-3 text-white/60">
-              Send official updates to Hack & Hit participants
-            </p>
-          </div>
+        <div className="w-full max-w-3xl bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-10">
 
-          {/* Mode Switch */}
-          <div className="flex gap-3 mb-8">
+          <h1 className="text-white text-3xl font-bold mb-6 text-center">
+            Mass Mailer
+          </h1>
+
+          {/* MODE SWITCH */}
+          <div className="flex gap-3 mb-6">
             {Object.values(MODES).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`
-                  flex-1 py-2 rounded-lg text-sm font-semibold transition
-                  ${
-                    mode === m
-                      ? "bg-emerald-500 text-[#041323]"
-                      : "bg-white/10 text-white hover:bg-white/20"
-                  }
-                `}
+                className={`flex-1 py-2 rounded-lg ${
+                  mode === m ? "bg-emerald-500 text-black" : "bg-white/10 text-white"
+                }`}
               >
-                {m === "test" && "Test"}
-                {m === "cc-bcc-test" && "CC / BCC Test"}
-                {m === "live" && "Live"}
+                {m}
               </button>
             ))}
           </div>
 
-          {/* Warnings */}
-          {mode === MODES.LIVE && (
-            <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
-              ⚠️ Live mode will send email to ALL team leaders.
-            </div>
+          {mode === MODES.TEST && (
+            <input
+              placeholder="Test Email"
+              value={testEmail}
+              onChange={(e) => setTestEmail(e.target.value)}
+              className="w-full mb-4 px-4 py-3 rounded bg-white/10 text-white"
+            />
           )}
 
           {mode === MODES.CC_BCC_TEST && (
-            <div className="mb-6 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 text-sm">
-              🧪 CC/BCC test will send mail ONLY to configured test emails.
-            </div>
-          )}
-
-          {/* Test Email */}
-          {mode === MODES.TEST && (
-            <div className="mb-6">
-              <label className="text-white/70 text-sm">
-                Test Email
-              </label>
+            <>
               <input
-                type="email"
-                value={testEmail}
-                onChange={(e) => setTestEmail(e.target.value)}
-                placeholder="yourgmail@gmail.com"
-                className="
-                  mt-2 w-full px-4 py-3 rounded-lg
-                  bg-white/10 border border-white/10
-                  text-white placeholder:text-white/40
-                  outline-none focus:ring-1 focus:ring-emerald-400/30
-                "
+                placeholder="CC Emails (comma separated)"
+                value={ccEmails}
+                onChange={(e) => setCcEmails(e.target.value)}
+                className="w-full mb-4 px-4 py-3 rounded bg-white/10 text-white"
               />
-            </div>
+
+              <input
+                placeholder="BCC Emails (comma separated)"
+                value={bccEmails}
+                onChange={(e) => setBccEmails(e.target.value)}
+                className="w-full mb-4 px-4 py-3 rounded bg-white/10 text-white"
+              />
+            </>
           )}
 
-          {/* Subject */}
-          <div className="mb-6">
-            <label className="text-white/70 text-sm">
-              Subject
-            </label>
-            <input
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              className="
-                mt-2 w-full px-4 py-3 rounded-lg
-                bg-white/10 border border-white/10
-                text-white placeholder:text-white/40
-                outline-none focus:ring-1 focus:ring-emerald-400/30
-              "
-              placeholder="Mail subject"
-            />
-          </div>
+          <input
+            placeholder="Subject"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className="w-full mb-4 px-4 py-3 rounded bg-white/10 text-white"
+          />
 
-          {/* Message */}
-          <div className="mb-8">
-            <label className="text-white/70 text-sm">
-              Message
-            </label>
-            <textarea
-              rows={6}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="
-                mt-2 w-full px-4 py-3 rounded-lg
-                bg-white/10 border border-white/10
-                text-white placeholder:text-white/40
-                outline-none resize-none
-                focus:ring-1 focus:ring-emerald-400/30
-              "
-              placeholder="Write your message here..."
-            />
-          </div>
+          <textarea
+            rows={6}
+            placeholder="Message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full mb-6 px-4 py-3 rounded bg-white/10 text-white"
+          />
 
-          {/* Submit */}
           <button
             onClick={handleSend}
             disabled={loading}
-            className={`
-              w-full py-3 rounded-lg text-lg font-semibold transition
-              ${
-                loading
-                  ? "bg-emerald-400 cursor-not-allowed"
-                  : "bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98]"
-              }
-              text-[#041323]
-            `}
+            className="w-full py-3 rounded-lg bg-emerald-500 text-black font-bold"
           >
             {loading ? "Sending..." : "Send Mail"}
           </button>
+
         </div>
       </div>
     </>
