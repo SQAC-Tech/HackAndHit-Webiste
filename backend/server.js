@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import connectDB from './model/db.js';
 import Team from './model/schema.js';
 import Admin from './model/adminSchema.js';
-import transporter from "./mailer.js";
+import { createTransporter } from "./mailer.js";
 
 dotenv.config();
 
