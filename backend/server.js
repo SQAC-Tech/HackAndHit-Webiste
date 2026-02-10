@@ -139,10 +139,12 @@ app.post('/api/admin/login', async (req, res) => {
 
         res.cookie("adminToken", token, {
             httpOnly: true,
-            secure: isProd,
-            sameSite: isProd ? "none" : "lax",
+            secure: true,        // MUST be true
+            sameSite: "none",    // REQUIRED for Vercel
+            path: "/",           // VERY IMPORTANT
             maxAge: 24 * 60 * 60 * 1000
         });
+
 
         res.json({ success: true, message: "Login successful" });
     } catch (err) {
@@ -153,8 +155,9 @@ app.post('/api/admin/login', async (req, res) => {
 app.post('/api/admin/logout', (req, res) => {
     res.clearCookie("adminToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
+        secure: true,
+        sameSite: "none",
+        path: "/"
     });
 
     res.json({ success: true, message: "Logged out" });
