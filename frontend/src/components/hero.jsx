@@ -1,6 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const Hero = () => {
+  const navigate = useNavigate();
+
+  const handleRegister = () => {
+    toast.info("Registrations Closed");
+  };
+
+  const handlePPT = () => {
+    navigate("/submitppt");
+  };
+
   return (
     <section
       id="home"
@@ -26,35 +39,52 @@ const Hero = () => {
         </h1>
 
         <div className="flex flex-col sm:flex-row gap-4">
-          <Link to="/form">
-            <button
-              className="
+          {/* Register (closed) */}
+          <button
+            onClick={handleRegister}
+            className="
+              px-6 py-3
+              bg-gray-600
+              text-white text-base sm:text-lg
+              font-medium rounded-md
+              hover:scale-105 transition
+            "
+          >
+            Register
+          </button>
+
+          {/* PPT Submission */}
+          <button
+            onClick={handlePPT}
+            className="
               px-6 py-3
               bg-[#FF6B35]
               text-white text-base sm:text-lg
               font-medium rounded-md
               hover:scale-105 transition
-          "
-            >
-              Register
-            </button>
-          </Link>
+            "
+          >
+            PPT Submission
+          </button>
 
+          {/* Learn More */}
           <a href="#domain">
             <button
               className="
-            px-6 py-3
-            border border-white/30
-            text-white text-base sm:text-lg
-            font-medium rounded-md
-            hover:bg-white/10 transition
-            "
+                px-6 py-3
+                border border-white/30
+                text-white text-base sm:text-lg
+                font-medium rounded-md
+                hover:bg-white/10 transition
+              "
             >
               Learn More
             </button>
           </a>
         </div>
       </div>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </section>
   );
 };

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "https://hack-and-hit-webiste.vercel.app";
+const API_URL = "https://hackandhit-webiste.onrender.com";
 
 export default function AdminLogin() {
     const [username, setUsername] = useState("");
@@ -19,7 +19,7 @@ export default function AdminLogin() {
 
         try {
             await axios.post(
-                `${API_URL}/adminlogin`,
+                `${API_URL}/api/admin/login`,
                 { username, password },
                 { withCredentials: true } // 🔥 REQUIRED
             );
