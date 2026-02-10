@@ -36,6 +36,20 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
 
     // ================= FETCH =================
+    const verifyAuth = async () => {
+        try {
+            await axios.get(`${API_URL}/admin/verify`, {
+                withCredentials: true,
+            });
+
+            // only fetch data if admin is verified
+            fetchData();
+        } catch (err) {
+            toast.error("Session expired. Please login again.");
+            setTimeout(() => navigate("/login"), 1000);
+        }
+    };
+
     const fetchData = async () => {
         try {
             const [teamsRes, dateRes, sizeRes] = await Promise.all([
@@ -55,7 +69,7 @@ const AdminDashboard = () => {
     };
 
     useEffect(() => {
-        fetchData();
+        verifyAuth();
     }, []);
 
     // ================= ROUND UPDATE =================
