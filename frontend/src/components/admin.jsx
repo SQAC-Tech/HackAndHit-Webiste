@@ -23,7 +23,7 @@ ChartJS.register(
     Legend
 );
 
-const API_URL = "https://hack-and-hit-webiste.vercel.app/api/teams";
+const API_URL = "https://hackandhit-webiste.onrender.com/api/teams";
 
 const AdminDashboard = () => {
     const [teams, setTeams] = useState([]);
