@@ -128,6 +128,13 @@ const teamSchema = new mongoose.Schema(
 
         /* ================== STATUS TAGS ================== */
         pptSubmitted: { type: Boolean, default: false },
+
+        pptLink: {
+            type: String,
+            trim: true,
+            default: null
+        },
+
         mailSent: { type: Boolean, default: false },
         round1: { type: Boolean, default: false },
         round2: { type: Boolean, default: false },

@@ -6,6 +6,9 @@ import AdminLogin from "./components/adminlogin";
 import MainSite from "./components/MainSite";
 import Footer from "./components/Footer";
 import FAQ from "./components/FAQ";
+import TeamLogin from "./components/teamlogin";
+import PPTSubmit from "./components/pptsubmit";
+import AdminMailer from "./components/massmailer";
 
 function App() {
   return (
@@ -18,6 +21,9 @@ function App() {
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/mainsite" element={<MainSite />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/teamlogin" element={<TeamLogin />} />
+        <Route path="/ppt-submit" element={<PPTSubmit/>} />
+        <Route path="/mailler" element={<AdminMailer />} />
       </Routes>
     </>
   );

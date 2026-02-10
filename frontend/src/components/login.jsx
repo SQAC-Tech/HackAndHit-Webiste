@@ -4,7 +4,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router";
 import "react-toastify/dist/ReactToastify.css";
 
-const API_URL = "https://hackandhit-webiste.onrender.com/api";
+const API_URL = "https://hack-and-hit-webiste.vercel.app/api";
 
 const Login = () => {
     const [username, setUsername] = useState("");
